@@ -64,10 +64,56 @@ def menghapus_jadwal_konsultasi():
   
 
 def mencari_jadwal_konsultasi():
+    if not jadwal_konsultasi:
+        print("Belum ada jadwal konsultasi.")
+        return
     
+    nama_cari = input("Masukkan nama pasien yang ingin dicari: ")
+    hasil = [jadwal for jadwal in jadwal_konsultasi if jadwal['nama'].lower() == nama_cari.lower()]
+    
+    if hasil:
+        print("\nHasil Pencarian:")
+        for jadwal in hasil:
+            print(f"{jadwal['nama']} - {jadwal['tanggal']} {jadwal['waktu']}")
+    else:
+        print("Tidak ditemukan jadwal konsultasi untuk nama tersebut.")
 
 def menampilkan_daftar_pasien_berdasarkan_hari():
-   
+   if not jadwal_konsultasi:
+        print("Belum ada jadwal konsultasi.")
+        return
+    
+    # Meminta input nama hari
+    hari_cari = input("Masukkan nama hari (contoh: Senin): ").capitalize()
+    
+    # Daftar nama hari dalam seminggu
+    nama_hari = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu"]
+    
+    # Cek apakah nama hari valid
+    if hari_cari not in nama_hari:
+        print("Nama hari tidak valid. Silakan coba lagi.")
+        return
+    
+    # Dapatkan indeks hari (0 untuk Senin, 1 untuk Selasa, dst.)
+    indeks_hari_cari = nama_hari.index(hari_cari)
+    
+    # Filter jadwal yang sesuai dengan nama hari yang dicari
+    hasil = []
+    for jadwal in jadwal_konsultasi:
+        # Konversi tanggal konsultasi menjadi objek datetime
+        tanggal = datetime.datetime.strptime(jadwal['tanggal'], "%Y-%m-%d")
+        
+        # Cek apakah hari dari tanggal cocok dengan hari yang dicari
+        if tanggal.weekday() == indeks_hari_cari:
+            hasil.append(jadwal)
+    
+    # Tampilkan hasil pencarian
+    if hasil:
+        print(f"\nDaftar Pasien dengan Janji pada Hari {hari_cari}:")
+        for jadwal in hasil:
+            print(f"{jadwal['nama']} - {jadwal['tanggal']} {jadwal['waktu']}")
+    else:
+        print(f"Tidak ditemukan jadwal konsultasi pada hari {hari_cari}.")
 
 
 
