@@ -23,7 +23,7 @@ def mencatat_data_pasien_baru():
     print(f"Data pasien {nama} berhasil ditambahkan.")
 
 def mengatur_jadwal_konsultasi():
-  if not data_pasien:
+    if not data_pasien:
         print("Tidak ada data pasien. Silakan tambahkan pasien terlebih dahulu.")
         return
     
@@ -40,10 +40,8 @@ def mengatur_jadwal_konsultasi():
     jadwal_konsultasi.sort(key=lambda x: (x['tanggal'], x['waktu']))
     print(f"Jadwal konsultasi untuk {nama_pasien} berhasil ditambahkan.")
 
-
 def menghapus_jadwal_konsultasi():
-
-     if not jadwal_konsultasi:
+    if not jadwal_konsultasi:
         print("Belum ada jadwal konsultasi.")
         return
     
@@ -58,7 +56,6 @@ def menghapus_jadwal_konsultasi():
     
     jadwal_dihapus = jadwal_konsultasi.pop(pilihan)
     print(f"Jadwal konsultasi untuk {jadwal_dihapus['nama']} pada {jadwal_dihapus['tanggal']} {jadwal_dihapus['waktu']} berhasil dihapus.")
-  
 
 def mencari_jadwal_konsultasi():
     if not jadwal_konsultasi:
@@ -76,7 +73,7 @@ def mencari_jadwal_konsultasi():
         print("Tidak ditemukan jadwal konsultasi untuk nama tersebut.")
 
 def menampilkan_daftar_pasien_berdasarkan_hari():
-   if not jadwal_konsultasi:
+    if not jadwal_konsultasi:
         print("Belum ada jadwal konsultasi.")
         return
     
@@ -112,8 +109,6 @@ def menampilkan_daftar_pasien_berdasarkan_hari():
     else:
         print(f"Tidak ditemukan jadwal konsultasi pada hari {hari_cari}.")
 
-
-
 # Pengulangan menu
 print("KLINIK LEXA")
 while True:
@@ -130,3 +125,4 @@ while True:
         menampilkan_daftar_pasien_berdasarkan_hari()
     else:
         print("Pilihan tidak valid. Silakan coba lagi.")
+
