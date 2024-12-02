@@ -41,7 +41,6 @@ def mengatur_jadwal_konsultasi():
     print(f"Jadwal konsultasi untuk {nama_pasien} berhasil ditambahkan.")
 
 
-
 def menghapus_jadwal_konsultasi():
 
      if not jadwal_konsultasi:
@@ -59,8 +58,6 @@ def menghapus_jadwal_konsultasi():
     
     jadwal_dihapus = jadwal_konsultasi.pop(pilihan)
     print(f"Jadwal konsultasi untuk {jadwal_dihapus['nama']} pada {jadwal_dihapus['tanggal']} {jadwal_dihapus['waktu']} berhasil dihapus.")
-
-
   
 
 def mencari_jadwal_konsultasi():
@@ -114,7 +111,6 @@ def menampilkan_daftar_pasien_berdasarkan_hari():
             print(f"{jadwal['nama']} - {jadwal['tanggal']} {jadwal['waktu']}")
     else:
         print(f"Tidak ditemukan jadwal konsultasi pada hari {hari_cari}.")
-
 
 
 
