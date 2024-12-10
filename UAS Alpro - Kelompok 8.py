@@ -11,7 +11,8 @@ def menu_utama():
     print("2. Mengatur Jadwal Konsultasi")
     print("3. Menghapus Jadwal Konsultasi")
     print("4. Menampilkan Daftar Jadwal Konsultasi Berdasarkan Hari")
-    print("5. Keluar")
+    print("5. Mencari Jadwal Konsultasi Berdasarkan Nama")  # Tambahan opsi
+    print("6. Keluar")
     pilihan = input("Pilih fitur: ")
     return pilihan
 
@@ -57,6 +58,26 @@ def mengatur_jadwal_konsultasi():
     })
     jadwal_konsultasi.sort(key=lambda x: datetime.datetime.strptime(x['tanggal'], "%d-%m-%Y"))
     print(f"Jadwal konsultasi untuk {nama_pasien} dengan {dokter_pasien} berhasil ditambahkan.")
+    
+    
+def mencari_jadwal_berdasarkan_nama():
+    if not jadwal_konsultasi:
+        print("Belum ada jadwal konsultasi.")
+        return
+    
+    nama_dicari = input("Masukkan nama pasien yang ingin dicari: ").strip().lower()
+    hasil_pencarian = [
+        jadwal for jadwal in jadwal_konsultasi
+        if nama_dicari in jadwal['nama'].lower()
+    ]
+    
+    if hasil_pencarian:
+        print("\nHasil Pencarian Jadwal Konsultasi:")
+        for jadwal in hasil_pencarian:
+            print(f"{jadwal['nama']} (Dokter: {jadwal['dokter']}, No. Telepon: {jadwal['nomor_telepon']}) - {jadwal['tanggal']} {jadwal['waktu']}")
+    else:
+        print("Tidak ada jadwal konsultasi yang sesuai dengan nama tersebut.")
+
 
 def menghapus_jadwal_konsultasi():
     if not jadwal_konsultasi:
@@ -110,8 +131,11 @@ while True:
     elif pilihan == '4':
         menampilkan_daftar_jadwal_berdasarkan_hari()
     elif pilihan == '5':
+        mencari_jadwal_berdasarkan_nama()
+    elif pilihan == '6':
         print("Terima kasih telah menggunakan program. Sampai jumpa!")
         break
     else:
         print("Pilihan tidak valid. Silakan coba lagi.")
+
 
