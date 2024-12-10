@@ -10,35 +10,53 @@ def menu_utama():
     print("1. Mencatat Data Pasien Baru")
     print("2. Mengatur Jadwal Konsultasi")
     print("3. Menghapus Jadwal Konsultasi")
-    print("4. Mencari Jadwal Konsultasi")
-    print("5. Menampilkan Daftar Pasien dengan Janji Konsultasi")
+    print("4. Menampilkan Daftar Jadwal Konsultasi Berdasarkan Hari")
+    print("5. Keluar")
     pilihan = input("Pilih fitur: ")
     return pilihan
 
 def mencatat_data_pasien_baru():
     nama = input("Masukkan nama pasien: ")
     usia = input("Masukkan usia pasien: ")
-    alamat = input("Masukkan alamat pasien: ")
-    data_pasien.append({"nama": nama, "usia": usia, "alamat": alamat})
-    print(f"Data pasien {nama} berhasil ditambahkan.")
+    nomor_telepon = input("Masukkan nomor telepon pasien: ")
+
+    print("\nDaftar Dokter:")
+    daftar_dokter = ["Dr. Andi", "Dr. Budi", "Dr. Clara", "Dr. Dewi"]
+    for idx, dokter in enumerate(daftar_dokter, start=1):
+        print(f"{idx}. {dokter}")
+    pilihan_dokter = int(input("Pilih dokter berdasarkan nomor: ")) - 1
+
+    if pilihan_dokter < 0 or pilihan_dokter >= len(daftar_dokter):
+        print("Pilihan tidak valid. Silakan ulangi pencatatan.")
+        return
+
+    dokter_dipilih = daftar_dokter[pilihan_dokter]
+    data_pasien.append({"nama": nama, "usia": usia, "nomor_telepon": nomor_telepon, "dokter": dokter_dipilih})
+    print(f"Data pasien {nama} berhasil ditambahkan dengan dokter {dokter_dipilih}.")
 
 def mengatur_jadwal_konsultasi():
     if not data_pasien:
         print("Tidak ada data pasien. Silakan tambahkan pasien terlebih dahulu.")
         return
     
-    # Mengambil pasien berdasarkan FIFO
     pasien = data_pasien.pop(0)  # Ambil pasien pertama dan hapus dari daftar
     nama_pasien = pasien['nama']
+    dokter_pasien = pasien['dokter']
+    nomor_telepon = pasien['nomor_telepon']
     
-    print(f"Pasien yang akan dijadwalkan: {nama_pasien}")
-    tanggal = input("Masukkan tanggal konsultasi (YYYY-MM-DD): ")
+    print(f"Pasien yang akan dijadwalkan: {nama_pasien} (Dokter: {dokter_pasien}, No. Telepon: {nomor_telepon})")
+    tanggal = input("Masukkan tanggal konsultasi (DD-MM-YYYY): ")
     waktu = input("Masukkan waktu konsultasi (HH:MM): ")
     
-    # Menambahkan jadwal konsultasi
-    jadwal_konsultasi.append({"nama": nama_pasien, "tanggal": tanggal, "waktu": waktu})
-    jadwal_konsultasi.sort(key=lambda x: (x['tanggal'], x['waktu']))
-    print(f"Jadwal konsultasi untuk {nama_pasien} berhasil ditambahkan.")
+    jadwal_konsultasi.append({
+        "nama": nama_pasien,
+        "dokter": dokter_pasien,
+        "nomor_telepon": nomor_telepon,
+        "tanggal": tanggal,
+        "waktu": waktu
+    })
+    jadwal_konsultasi.sort(key=lambda x: datetime.datetime.strptime(x['tanggal'], "%d-%m-%Y"))
+    print(f"Jadwal konsultasi untuk {nama_pasien} dengan {dokter_pasien} berhasil ditambahkan.")
 
 def menghapus_jadwal_konsultasi():
     if not jadwal_konsultasi:
@@ -47,7 +65,7 @@ def menghapus_jadwal_konsultasi():
     
     print("\nDaftar Jadwal Konsultasi:")
     for idx, jadwal in enumerate(jadwal_konsultasi):
-        print(f"{idx + 1}. {jadwal['nama']} - {jadwal['tanggal']} {jadwal['waktu']}")
+        print(f"{idx + 1}. {jadwal['nama']} (Dokter: {jadwal['dokter']}, No. Telepon: {jadwal['nomor_telepon']}) - {jadwal['tanggal']} {jadwal['waktu']}")
     
     pilihan = int(input("Pilih jadwal yang ingin dihapus berdasarkan nomor: ")) - 1
     if pilihan < 0 or pilihan >= len(jadwal_konsultasi):
@@ -55,59 +73,29 @@ def menghapus_jadwal_konsultasi():
         return
     
     jadwal_dihapus = jadwal_konsultasi.pop(pilihan)
-    print(f"Jadwal konsultasi untuk {jadwal_dihapus['nama']} pada {jadwal_dihapus['tanggal']} {jadwal_dihapus['waktu']} berhasil dihapus.")
+    print(f"Jadwal konsultasi untuk {jadwal_dihapus['nama']} dengan {jadwal_dihapus['dokter']} pada {jadwal_dihapus['tanggal']} {jadwal_dihapus['waktu']} berhasil dihapus.")
 
-def mencari_jadwal_konsultasi():
+def menampilkan_daftar_jadwal_berdasarkan_hari():
     if not jadwal_konsultasi:
         print("Belum ada jadwal konsultasi.")
         return
     
-    nama_cari = input("Masukkan nama pasien yang ingin dicari: ")
-    hasil = [jadwal for jadwal in jadwal_konsultasi if jadwal['nama'].lower() == nama_cari.lower()]
-    
-    if hasil:
-        print("\nHasil Pencarian:")
-        for jadwal in hasil:
-            print(f"{jadwal['nama']} - {jadwal['tanggal']} {jadwal['waktu']}")
-    else:
-        print("Tidak ditemukan jadwal konsultasi untuk nama tersebut.")
-
-def menampilkan_daftar_pasien_berdasarkan_hari():
-    if not jadwal_konsultasi:
-        print("Belum ada jadwal konsultasi.")
-        return
-    
-    # Meminta input nama hari
-    hari_cari = input("Masukkan nama hari (contoh: Senin): ").capitalize()
-    
-    # Daftar nama hari dalam seminggu
     nama_hari = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu"]
+    jadwal_per_hari = {hari: [] for hari in nama_hari}
     
-    # Cek apakah nama hari valid
-    if hari_cari not in nama_hari:
-        print("Nama hari tidak valid. Silakan coba lagi.")
-        return
-    
-    # Dapatkan indeks hari (0 untuk Senin, 1 untuk Selasa, dst.)
-    indeks_hari_cari = nama_hari.index(hari_cari)
-    
-    # Filter jadwal yang sesuai dengan nama hari yang dicari
-    hasil = []
     for jadwal in jadwal_konsultasi:
-        # Konversi tanggal konsultasi menjadi objek datetime
-        tanggal = datetime.datetime.strptime(jadwal['tanggal'], "%Y-%m-%d")
-        
-        # Cek apakah hari dari tanggal cocok dengan hari yang dicari
-        if tanggal.weekday() == indeks_hari_cari:
-            hasil.append(jadwal)
+        tanggal = datetime.datetime.strptime(jadwal['tanggal'], "%d-%m-%Y")
+        nama_hari_konsultasi = nama_hari[tanggal.weekday()]
+        jadwal_per_hari[nama_hari_konsultasi].append(jadwal)
     
-    # Tampilkan hasil pencarian
-    if hasil:
-        print(f"\nDaftar Pasien dengan Janji pada Hari {hari_cari}:")
-        for jadwal in hasil:
-            print(f"{jadwal['nama']} - {jadwal['tanggal']} {jadwal['waktu']}")
-    else:
-        print(f"Tidak ditemukan jadwal konsultasi pada hari {hari_cari}.")
+    print("\nJadwal Konsultasi Berdasarkan Hari:")
+    for hari, jadwals in jadwal_per_hari.items():
+        print(f"\nHari {hari}:")
+        if jadwals:
+            for jadwal in jadwals:
+                print(f"  {jadwal['nama']} (Dokter: {jadwal['dokter']}, No. Telepon: {jadwal['nomor_telepon']}) - {jadwal['tanggal']} {jadwal['waktu']}")
+        else:
+            print("  Tidak ada jadwal.")
 
 # Pengulangan menu
 print("KLINIK LEXA")
@@ -120,9 +108,10 @@ while True:
     elif pilihan == '3':
         menghapus_jadwal_konsultasi()
     elif pilihan == '4':
-        mencari_jadwal_konsultasi()
+        menampilkan_daftar_jadwal_berdasarkan_hari()
     elif pilihan == '5':
-        menampilkan_daftar_pasien_berdasarkan_hari()
+        print("Terima kasih telah menggunakan program. Sampai jumpa!")
+        break
     else:
         print("Pilihan tidak valid. Silakan coba lagi.")
 
